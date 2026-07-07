@@ -165,21 +165,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
     }
   }
 
-  String _getStatusText(String status) {
-    switch (status) {
-      case AppConstants.statusOpen:
-        return 'Open';
-      case AppConstants.statusAssign:
-        return 'Assign';
-      case AppConstants.statusInProgress:
-        return 'In Progress';
-      case AppConstants.statusClosed:
-        return 'Closed';
-      default:
-        return status;
-    }
-  }
-
   Color _getStatusColor(String status) {
     switch (status) {
       case AppConstants.statusOpen:
