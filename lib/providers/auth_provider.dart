@@ -60,14 +60,12 @@ class AuthProvider extends ChangeNotifier {
   Future<void> checkAuthStatus() async {
     final isLoggedIn = await _authRepository.isLoggedIn();
     if (isLoggedIn) {
-      // In real app, fetch user from API
-      // For now, we'll just set a mock user
-      _currentUser = UserModel(
-        id: '1',
-        name: 'User Biasa',
-        email: 'user@example.com',
-        role: 'user',
-      );
+      final user = await _authRepository.getCurrentUser();
+      if (user != null) {
+        _currentUser = user;
+      } else {
+        await logout();
+      }
     }
     notifyListeners();
   }

@@ -6,7 +6,7 @@ import '../../core/widgets/custom_textfield.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -50,130 +50,133 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Spacer(flex: 1),
-                Icon(
-                  Icons.confirmation_number,
-                  size: 80,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Icon(
+                    Icons.confirmation_number,
+                    size: 80,
                     color: Theme.of(context).primaryColor,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Masuk ke akun Anda',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                  const SizedBox(height: 20),
+                  Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                CustomTextField(
-                  label: 'Email',
-                  hint: 'Masukkan email Anda',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email tidak boleh kosong';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Email tidak valid';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  label: 'Password',
-                  hint: 'Masukkan password',
-                  obscureText: _obscurePassword,
-                  controller: _passwordController,
-                  prefixIcon: Icons.lock_outline,
-                  suffixIcon: _obscurePassword
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  onSuffixTap: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password tidak boleh kosong';
-                    }
-                    if (value.length < 6) {
-                      return 'Password minimal 6 karakter';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // Forgot password
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Reset Password'),
-                          content: const Text(
-                            'Fitur reset password akan segera hadir',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Masuk ke akun Anda',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  CustomTextField(
+                    label: 'Email',
+                    hint: 'Masukkan email Anda',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email tidak boleh kosong';
+                      }
+                      if (!value.contains('@')) {
+                        return 'Email tidak valid';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    label: 'Password',
+                    hint: 'Masukkan password',
+                    obscureText: _obscurePassword,
+                    controller: _passwordController,
+                    prefixIcon: Icons.lock_outline,
+                    suffixIcon: _obscurePassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    onSuffixTap: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password tidak boleh kosong';
+                      }
+                      if (value.length < 6) {
+                        return 'Password minimal 6 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Forgot password
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Reset Password'),
+                            content: const Text(
+                              'Fitur reset password akan segera hadir',
                             ),
-                          ],
-                        ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: const Text('Lupa Password?'),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Consumer<AuthProvider>(
+                    builder: (context, authProvider, _) {
+                      return CustomButton(
+                        text: 'Login',
+                        onPressed: _handleLogin,
+                        isLoading: authProvider.isLoading,
                       );
                     },
-                    child: const Text('Lupa Password?'),
                   ),
-                ),
-                const SizedBox(height: 24),
-                Consumer<AuthProvider>(
-                  builder: (context, authProvider, _) {
-                    return CustomButton(
-                      text: 'Login',
-                      onPressed: _handleLogin,
-                      isLoading: authProvider.isLoading,
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Belum punya akun? "),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppConstants.routeRegister);
-                      },
-                      child: const Text('Daftar Sekarang'),
-                    ),
-                  ],
-                ),
-                const Spacer(flex: 1),
-              ],
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Belum punya akun? "),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppConstants.routeRegister);
+                        },
+                        child: const Text('Daftar Sekarang'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

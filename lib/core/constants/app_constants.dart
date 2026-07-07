@@ -20,7 +20,7 @@ class AppConstants {
 
   // Ticket status
   static const String statusOpen = 'open';
+  static const String statusAssign = 'assign';
   static const String statusInProgress = 'in_progress';
-  static const String statusResolved = 'resolved';
   static const String statusClosed = 'closed';
 }

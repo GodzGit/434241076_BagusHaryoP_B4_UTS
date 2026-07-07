@@ -7,7 +7,7 @@ import '../../providers/ticket_provider.dart';
 import '../widgets/ticket_card.dart';
 
 class TicketListScreen extends StatefulWidget {
-  const TicketListScreen({Key? key}) : super(key: key);
+  const TicketListScreen({super.key});
 
   @override
   State<TicketListScreen> createState() => _TicketListScreenState();
@@ -46,10 +46,10 @@ class _TicketListScreenState extends State<TicketListScreen>
     switch (_selectedStatus) {
       case AppConstants.statusOpen:
         return tickets.where((t) => t.status == AppConstants.statusOpen).toList();
+      case AppConstants.statusAssign:
+        return tickets.where((t) => t.status == AppConstants.statusAssign).toList();
       case AppConstants.statusInProgress:
         return tickets.where((t) => t.status == AppConstants.statusInProgress).toList();
-      case AppConstants.statusResolved:
-        return tickets.where((t) => t.status == AppConstants.statusResolved).toList();
       case AppConstants.statusClosed:
         return tickets.where((t) => t.status == AppConstants.statusClosed).toList();
       default:
@@ -80,10 +80,10 @@ class _TicketListScreenState extends State<TicketListScreen>
                   _selectedStatus = AppConstants.statusOpen;
                   break;
                 case 2:
-                  _selectedStatus = AppConstants.statusInProgress;
+                  _selectedStatus = AppConstants.statusAssign;
                   break;
                 case 3:
-                  _selectedStatus = AppConstants.statusResolved;
+                  _selectedStatus = AppConstants.statusInProgress;
                   break;
                 case 4:
                   _selectedStatus = AppConstants.statusClosed;
@@ -94,8 +94,8 @@ class _TicketListScreenState extends State<TicketListScreen>
           tabs: const [
             Tab(text: 'Semua'),
             Tab(text: 'Open'),
+            Tab(text: 'Assign'),
             Tab(text: 'Progress'),
-            Tab(text: 'Resolved'),
             Tab(text: 'Closed'),
           ],
         ),

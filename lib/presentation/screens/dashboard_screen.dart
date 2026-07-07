@@ -6,7 +6,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/ticket_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -162,8 +162,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         _buildStatCard(
                           context,
-                          'Resolved',
-                          stats?['resolved']?.toString() ?? '0',
+                          'Closed',
+                          stats?['closed']?.toString() ?? '0',
                           Icons.check_circle,
                           Colors.green,
                         ),
@@ -184,21 +184,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     
                     Row(
                       children: [
-                        Expanded(
-                          child: _buildActionCard(
-                            context,
-                            'Buat Tiket Baru',
-                            Icons.add_circle,
-                            Colors.green,
-                            () {
-                              Navigator.pushNamed(
-                                context,
-                                AppConstants.routeCreateTicket,
-                              );
-                            },
+                        if (user?.role == AppConstants.roleUser) ...[
+                          Expanded(
+                            child: _buildActionCard(
+                              context,
+                              'Buat Tiket Baru',
+                              Icons.add_circle,
+                              Colors.green,
+                              () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppConstants.routeCreateTicket,
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
+                          const SizedBox(width: 12),
+                        ],
                         Expanded(
                           child: _buildActionCard(
                             context,
@@ -267,7 +269,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               subtitle: Text(
-                                '${ticket.statusText} • ${ticket.createdAt}',
+                                '${ticket.statusText} • ${ticket.createdAt.length >= 10 ? ticket.createdAt.substring(0, 10) : ticket.createdAt}',
                                 style: const TextStyle(fontSize: 12),
                               ),
                               trailing: const Icon(Icons.chevron_right),
@@ -380,10 +382,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     switch (status) {
       case AppConstants.statusOpen:
         return Colors.orange;
+      case AppConstants.statusAssign:
+        return Colors.indigo;
       case AppConstants.statusInProgress:
         return Colors.blue;
-      case AppConstants.statusResolved:
-        return Colors.green;
       case AppConstants.statusClosed:
         return Colors.grey;
       default:
@@ -395,12 +397,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     switch (status) {
       case AppConstants.statusOpen:
         return Icons.pending;
+      case AppConstants.statusAssign:
+        return Icons.assignment_ind;
       case AppConstants.statusInProgress:
         return Icons.sync;
-      case AppConstants.statusResolved:
-        return Icons.check;
       case AppConstants.statusClosed:
-        return Icons.close;
+        return Icons.check_circle;
       default:
         return Icons.help;
     }

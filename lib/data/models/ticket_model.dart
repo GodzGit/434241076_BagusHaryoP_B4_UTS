@@ -11,6 +11,7 @@ class TicketModel {
   final String userId;
   final String userName;
   final String? assignedTo;
+  final String? assignedToName;
   final List<CommentModel> comments;
   final List<String> attachments;
 
@@ -24,25 +25,42 @@ class TicketModel {
     required this.userId,
     required this.userName,
     this.assignedTo,
+    this.assignedToName,
     required this.comments,
     required this.attachments,
   });
 
   factory TicketModel.fromJson(Map<String, dynamic> json) {
     return TicketModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      status: json['status'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      userId: json['userId'],
-      userName: json['userName'],
-      assignedTo: json['assignedTo'],
-      comments: (json['comments'] as List)
-          .map((c) => CommentModel.fromJson(c))
-          .toList(),
-      attachments: List<String>.from(json['attachments']),
+      id: json['id'].toString(),
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      status: json['status'] ?? 'open',
+      createdAt: json['created_at'] ?? json['createdAt'] ?? '',
+      updatedAt: json['updated_at'] ?? json['updatedAt'] ?? '',
+      userId: json['user_id'] ?? json['userId'] ?? '',
+      userName: json['user_profile'] != null
+          ? (json['user_profile']['name'] ?? 'Unknown')
+          : (json['profiles'] != null
+              ? (json['profiles']['name'] ?? 'Unknown')
+              : (json['userName'] ?? 'Unknown')),
+      assignedTo: json['assigned_to'] ?? json['assignedTo'],
+      assignedToName: json['assigned_profile'] != null
+          ? json['assigned_profile']['name']
+          : (json['assignedToName']),
+      comments: json['comments'] != null
+          ? (json['comments'] as List)
+              .map((c) => CommentModel.fromJson(c))
+              .toList()
+          : [],
+      attachments: json['attachments'] != null
+          ? List<String>.from((json['attachments'] as List).map((a) {
+              if (a is Map) {
+                return a['file_url'] as String;
+              }
+              return a.toString();
+            }))
+          : [],
     );
   }
 
@@ -50,10 +68,10 @@ class TicketModel {
     switch (status) {
       case AppConstants.statusOpen:
         return 'Open';
+      case AppConstants.statusAssign:
+        return 'Assign';
       case AppConstants.statusInProgress:
         return 'In Progress';
-      case AppConstants.statusResolved:
-        return 'Resolved';
       case AppConstants.statusClosed:
         return 'Closed';
       default:

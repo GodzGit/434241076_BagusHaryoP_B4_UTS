@@ -7,10 +7,10 @@ class TicketCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const TicketCard({
-    Key? key,
+    super.key,
     required this.ticket,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,9 @@ class TicketCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    ticket.createdAt.substring(0, 10),
+                    ticket.createdAt.length >= 10
+                        ? ticket.createdAt.substring(0, 10)
+                        : ticket.createdAt,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[500],
@@ -90,53 +92,67 @@ class TicketCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
-              Row(
+              Wrap(
+                spacing: 12,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Icon(
-                    Icons.person_outline,
-                    size: 14,
-                    color: Colors.grey[500],
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    ticket.userName,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  if (ticket.assignedTo != null) ...[
-                    const SizedBox(width: 12),
-                    Icon(
-                      Icons.person_add_alt,
-                      size: 14,
-                      color: Colors.grey[500],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Assign: ${ticket.assignedTo}',
-                      style: TextStyle(
-                        fontSize: 12,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.person_outline,
+                        size: 14,
                         color: Colors.grey[500],
                       ),
-                    ),
-                  ],
-                  if (ticket.comments.isNotEmpty) ...[
-                    const SizedBox(width: 12),
-                    Icon(
-                      Icons.comment,
-                      size: 14,
-                      color: Colors.grey[500],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${ticket.comments.length}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[500],
+                      const SizedBox(width: 4),
+                      Text(
+                        ticket.userName,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[500],
+                        ),
                       ),
+                    ],
+                  ),
+                  if (ticket.assignedTo != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.person_add_alt,
+                          size: 14,
+                          color: Colors.grey[500],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Assign: ${ticket.assignedToName ?? "Petugas"}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  if (ticket.comments.isNotEmpty)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.comment,
+                          size: 14,
+                          color: Colors.grey[500],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${ticket.comments.length}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ],
@@ -150,10 +166,10 @@ class TicketCard extends StatelessWidget {
     switch (status) {
       case AppConstants.statusOpen:
         return Colors.orange;
+      case AppConstants.statusAssign:
+        return Colors.indigo;
       case AppConstants.statusInProgress:
         return Colors.blue;
-      case AppConstants.statusResolved:
-        return Colors.green;
       case AppConstants.statusClosed:
         return Colors.grey;
       default:
@@ -165,12 +181,12 @@ class TicketCard extends StatelessWidget {
     switch (status) {
       case AppConstants.statusOpen:
         return Icons.pending;
+      case AppConstants.statusAssign:
+        return Icons.assignment_ind;
       case AppConstants.statusInProgress:
         return Icons.sync;
-      case AppConstants.statusResolved:
-        return Icons.check_circle;
       case AppConstants.statusClosed:
-        return Icons.cancel;
+        return Icons.check_circle;
       default:
         return Icons.help;
     }

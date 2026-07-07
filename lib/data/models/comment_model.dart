@@ -15,11 +15,13 @@ class CommentModel {
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
     return CommentModel(
-      id: json['id'],
-      userId: json['userId'],
-      userName: json['userName'],
-      content: json['content'],
-      createdAt: json['createdAt'],
+      id: json['id'].toString(),
+      userId: json['user_id'] ?? json['userId'] ?? '',
+      userName: json['profiles'] != null
+          ? (json['profiles']['name'] ?? 'Unknown')
+          : (json['userName'] ?? 'Unknown'),
+      content: json['content'] ?? '',
+      createdAt: json['created_at'] ?? json['createdAt'] ?? '',
     );
   }
 }

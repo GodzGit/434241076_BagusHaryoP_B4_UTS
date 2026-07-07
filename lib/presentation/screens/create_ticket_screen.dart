@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/ticket_provider.dart';
 
 class CreateTicketScreen extends StatefulWidget {
-  const CreateTicketScreen({Key? key}) : super(key: key);
+  const CreateTicketScreen({super.key});
 
   @override
   State<CreateTicketScreen> createState() => _CreateTicketScreenState();
@@ -19,7 +20,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final List<File> _attachments = [];
+  final List<XFile> _attachments = [];
   final ImagePicker _picker = ImagePicker();
   bool _isSubmitting = false;
 
@@ -35,7 +36,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
       final XFile? image = await _picker.pickImage(source: source);
       if (image != null) {
         setState(() {
-          _attachments.add(File(image.path));
+          _attachments.add(image);
         });
       }
     } catch (e) {
@@ -99,16 +100,12 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
       final user = authProvider.currentUser;
 
       if (user != null) {
-        // In real app, you would upload files to server first
-        // For now, we just store filenames as mock
-        final attachmentNames = _attachments.map((f) => f.path.split('/').last).toList();
-
         final success = await ticketProvider.createTicket(
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
           userId: user.id,
           userName: user.name,
-          attachments: attachmentNames,
+          attachments: _attachments,
         );
 
         setState(() {
@@ -238,6 +235,12 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                             itemCount: _attachments.length,
                             itemBuilder: (context, index) {
                               final file = _attachments[index];
+                              
+                              // Select correct image provider for web vs native mobile platforms
+                              final ImageProvider imageProvider = kIsWeb
+                                  ? NetworkImage(file.path)
+                                  : FileImage(File(file.path));
+
                               return Stack(
                                 children: [
                                   Container(
@@ -247,7 +250,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
                                       image: DecorationImage(
-                                        image: FileImage(file),
+                                        image: imageProvider,
                                         fit: BoxFit.cover,
                                       ),
                                     ),

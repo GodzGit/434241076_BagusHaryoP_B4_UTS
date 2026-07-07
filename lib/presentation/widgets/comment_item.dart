@@ -5,9 +5,9 @@ class CommentItem extends StatelessWidget {
   final CommentModel comment;
 
   const CommentItem({
-    Key? key,
+    super.key,
     required this.comment,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

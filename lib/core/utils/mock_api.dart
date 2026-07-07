@@ -81,7 +81,7 @@ class MockApi {
   }
 
   // ============ TICKETS ============
-  static List<Map<String, dynamic>> _tickets = [
+  static final List<Map<String, dynamic>> _tickets = [
     {
       'id': 'TCK001',
       'title': 'WiFi tidak bisa connect',
@@ -120,7 +120,7 @@ class MockApi {
       'id': 'TCK003',
       'title': 'Email error',
       'description': 'Tidak bisa mengirim email dengan attachment',
-      'status': AppConstants.statusResolved,
+      'status': AppConstants.statusClosed,
       'createdAt': '2026-04-18 10:00:00',
       'updatedAt': '2026-04-19 16:00:00',
       'userId': '2',
@@ -240,8 +240,6 @@ class MockApi {
     final open = _tickets.where((t) => t['status'] == AppConstants.statusOpen).length;
     final inProgress =
         _tickets.where((t) => t['status'] == AppConstants.statusInProgress).length;
-    final resolved =
-        _tickets.where((t) => t['status'] == AppConstants.statusResolved).length;
     final closed =
         _tickets.where((t) => t['status'] == AppConstants.statusClosed).length;
 
@@ -249,7 +247,6 @@ class MockApi {
       'total': total,
       'open': open,
       'inProgress': inProgress,
-      'resolved': resolved,
       'closed': closed,
     };
   }

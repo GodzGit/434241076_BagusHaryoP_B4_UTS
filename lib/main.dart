@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/constants/app_constants.dart';
+import 'services/supabase_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/ticket_provider.dart';
 import 'providers/theme_provider.dart';
@@ -13,12 +13,18 @@ import 'presentation/screens/ticket_detail_screen.dart';
 import 'presentation/screens/create_ticket_screen.dart';
 import 'presentation/screens/profile_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Supabase
+  final supabaseService = SupabaseService();
+  await supabaseService.init();
+  
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +42,16 @@ class MyApp extends StatelessWidget {
             theme: themeProvider.lightTheme,
             darkTheme: themeProvider.darkTheme,
             themeMode: themeProvider.themeMode,
-            initialRoute: AppConstants.routeSplash,
+            initialRoute: '/',
             routes: {
-              AppConstants.routeSplash: (context) => const SplashScreen(),
-              AppConstants.routeLogin: (context) => const LoginScreen(),
-              AppConstants.routeRegister: (context) => const RegisterScreen(),
-              AppConstants.routeDashboard: (context) => const DashboardScreen(),
-              AppConstants.routeTicketList: (context) => const TicketListScreen(),
-              AppConstants.routeTicketDetail: (context) => const TicketDetailScreen(),
-              AppConstants.routeCreateTicket: (context) => const CreateTicketScreen(),
-              AppConstants.routeProfile: (context) => const ProfileScreen(),
-            },
-            onGenerateRoute: (settings) {
-              if (settings.name == AppConstants.routeTicketDetail) {
-                return MaterialPageRoute(
-                  builder: (context) => const TicketDetailScreen(),
-                  settings: settings,
-                );
-              }
-              return null;
+              '/': (context) => const SplashScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/dashboard': (context) => const DashboardScreen(),
+              '/tickets': (context) => const TicketListScreen(),
+              '/ticket/:id': (context) => const TicketDetailScreen(),
+              '/create-ticket': (context) => const CreateTicketScreen(),
+              '/profile': (context) => const ProfileScreen(),
             },
           );
         },
